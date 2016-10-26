@@ -1,0 +1,88 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model GAdemo.Models.EcommerceViewModel
+<div>
+    @if(Model.Product != null) { 
+
+    <h1>@Model.Product.Name</h1>
+
+        <p>
+            <strong>Brand: </strong>@Model.Product.Brand<br/>
+            <strong>Brand: </strong>@Model.Product.Variant<br />
+            <strong>Price: </strong>@Model.Product.Price<br/>
+            <strong>Category: </strong>@Model.Product.Category<br />
+        </p>
+
+
+
+    using (Html.BeginForm("AddToBasket", "Ecommerce", FormMethod.Post))
+    {
+        @Html.Hidden("ProductId", Model.Product.Id)
+
+        <input class="button" id="submit" type="submit" value="Add @Model.Product.Name to basket"/>
+    }
+
+    <p><strong>@Model.Message</strong></p>
+        <p>
+            Go to chekcout here: @Html.ActionLink("Checkout", "Checkout", "Ecommerce")
+        </p>
+        <p>Or add anoterproduct here: @Html.ActionLink("Product overview", "Ecommerce", "Ecommerce")</p>
+    }
+    else
+    {
+        <h2>No product choosen. Go back to product overview here: @Html.ActionLink("Product overview", "Ecommerce", "Ecommerce")</h2>
+    }
+</div>
+<script>
+    // Measures product impressions and also tracks a standard
+    // pageview for the tag configuration.
+    // Product impressions are sent by pushing an impressions object
+    // containing one or more impressionFieldObjects.
+    @if (Model.Product != null) {
+    <text>
+    dataLayer.push({
+        'ecommerce': {
+            'currencyCode': 'NOK', // Local currency is optional.
+            'detail': {
+                'products': [
+                    {
+                        'name': '@Model.Product.Name', // Name or ID is required.
+                        'id': '@Model.Product.Id',
+                        'price': '@Model.Product.Price',
+                        'brand': '@Model.Product.Brand',
+                        'category': '@Model.Product.Category',
+                        'variant': '@Model.Product.Variant',
+                        'list': '@Model.Product.List',
+                        'position': @Model.Product.Position
+                        }
+                ]
+            }
+        }
+    });
+    </text>
+    }
+
+    @if (Model.AddedGAproduct != null){
+    <text>
+    // Measure adding a product to a shopping cart by using an 'add' actionFieldObject
+    // and a list of productFieldObjects.
+    dataLayer.push({
+        'event': 'addToCart',
+        'ecommerce': {
+            'currencyCode': 'EUR',
+            'add': {                                // 'add' actionFieldObject measures.
+                'products': [{                        //  adding a product to a shopping cart.
+                    'name': '@Model.AddedGAproduct.Name',
+                    'id': '@Model.AddedGAproduct.Id',
+                    'price': '@Model.AddedGAproduct.Price',
+                    'brand': '@Model.AddedGAproduct.Brand',
+                    'category': '@Model.AddedGAproduct.Category',
+                    'variant': '@Model.AddedGAproduct.Variant',
+                    'quantity': @Model.AddedGAproduct.Quantity
+                    }]
+            }
+        }
+    });</text>
+    }
+</script>

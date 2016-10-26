@@ -1,0 +1,58 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@model GAdemo.Models.EcommerceViewModel
+<div>
+    <h1>Ecommerce start here</h1>
+
+    <h3>Chose on of the available products</h3>
+
+
+
+    @using (Html.BeginForm("GoToProduct", "Ecommerce", FormMethod.Post))
+    {
+        @Html.LabelFor(m => m.Products)
+        @Html.DropDownListFor(m => m.Products, Model.Products.Select(p => new SelectListItem
+        {
+            Value = p.Id,
+            Text = p.Name,
+            Selected = p.Id == "10"
+        }))
+
+        <input class="button" id="submit" type="submit" value="See product"/>
+    }
+
+    <p>
+        <h3>Here are some useful links</h3>
+        <ul>
+            <li><a href="https://developers.google.com/tag-manager/enhanced-ecommerce" target="_blank">https://developers.google.com/tag-manager/enhanced-ecommerce</a></li>
+            <li><a href="http://www.simoahava.com/analytics/enhanced-ecommerce-tips-and-learnings/" target="_blank">http://www.simoahava.com/analytics/enhanced-ecommerce-tips-and-learnings/</a></li>
+        </ul>
+    </p>
+</div>
+<script>
+    // Measures product impressions and also tracks a standard
+    // pageview for the tag configuration.
+    // Product impressions are sent by pushing an impressions object
+    // containing one or more impressionFieldObjects.
+    dataLayer.push({
+        'ecommerce': {
+            'currencyCode': 'NOK',                       // Local currency is optional.
+            'impressions': [
+                @foreach (var product in Model.Products)
+        {
+            <text>{
+                    'name':'@product.Name', // Name or ID is required.
+                    'id': '@product.Id',
+                    'price': '@product.Price',
+                    'brand': '@product.Brand',
+                    'category': '@product.Category',
+                    'variant': '@product.Variant',
+                    'list': '@product.List',
+                    'position': @product.Position
+                    },</text>
+        }
+            ]
+        }
+    });
+</script>

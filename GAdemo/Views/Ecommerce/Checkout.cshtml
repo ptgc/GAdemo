@@ -1,0 +1,60 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var itemsInBasket = Model.Basket?.Items?.Count ?? 0;
+}
+@model GAdemo.Models.EcommerceViewModel
+
+<div>
+    <h1>Simple checkout pages</h1>
+
+    <p>Products in cart: @itemsInBasket</p>
+
+    @if (Model.Basket != null && Model.Basket.Items != null)
+    {
+        foreach (var product in Model.Basket.Items)
+        {
+            <span>@product.Name</span>
+            <br/>
+        }
+    }
+
+
+
+    @Html.ActionLink("Orderconfirmation", "Orderconfirmation", "Ecommerce")
+</div>
+@if (Model.Basket?.Items != null)
+{
+    <script>
+/**
+ * A function to handle a click on a checkout button. This function uses the eventCallback
+ * data layer variable to handle navigation after the ecommerce data has been sent to Google Analytics.
+ */
+
+function onCheckout() {
+    dataLayer.push({
+        'event': 'checkout',
+        'ecommerce': {
+            'checkout': {
+                'actionField': { 'step': 1, 'option': 'Visa' },
+                'products': [
+                    @foreach (var produt in Model.Basket.Items)
+                    {
+                        <text>{
+                        'name': '@produt.Name',
+                        'id': '@produt.Id',
+                        'price': '@produt.Price',
+                        'brand': '@produt.Brand',
+                        'category': '@produt.Category',
+                        'variant': '@produt.Variant',
+                        'quantity': @produt.Quantity
+                    }, </text>
+                    }
+                        ]
+                    }
+                }
+            });
+}
+
+onCheckout();
+    </script>
+}
